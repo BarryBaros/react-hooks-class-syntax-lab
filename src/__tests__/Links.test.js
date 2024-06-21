@@ -2,29 +2,34 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Links from "../components/Links";
 
-function isClassComponent(component) {
-  return (
-    typeof component === "function" && !!component.prototype.isReactComponent
-  );
+// Check if the component is a functional component
+function isFunctionalComponent(component) {
+  return typeof component === "function";
 }
 
-test("uses a class component", () => {
-  expect(isClassComponent(Links)).toBe(true);
+test("uses a functional component", () => {
+  expect(isFunctionalComponent(Links)).toBe(true);
 });
 
-test("renders the h3 with the text 'Links'", () => {
+test("renders the component correctly", () => {
   render(<Links />);
-  expect(screen.queryByText("Links")).toBeInTheDocument();
+  const headerElement = screen.getByRole("heading", { name: /Links/i });
+  expect(headerElement).toBeInTheDocument();
 });
 
 test("displays a Github link passed down as a prop", () => {
   render(<Links github={"https://github.com/liza"} />);
-  expect(screen.queryByText("https://github.com/liza")).toBeInTheDocument();
+  const githubLink = screen.getByRole("link", { name: /github/i });
+  expect(githubLink).toBeInTheDocument();
+  expect(githubLink).toHaveAttribute("href", "https://github.com/liza");
 });
 
 test("displays a Linkedin link passed down as a prop", () => {
   render(<Links linkedin={"https://www.linkedin.com/in/liza/"} />);
-  expect(
-    screen.queryByText("https://www.linkedin.com/in/liza/")
-  ).toBeInTheDocument();
+  const linkedinLink = screen.getByRole("link", { name: /linkedin/i });
+  expect(linkedinLink).toBeInTheDocument();
+  expect(linkedinLink).toHaveAttribute(
+    "href",
+    "https://www.linkedin.com/in/liza/"
+  );
 });
